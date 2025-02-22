@@ -1,16 +1,26 @@
 import { createContext, useEffect, useState } from "react"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Header from "./components/Header";
 import RegionSelector from "./components/RegionSelector";
-import ShowCountries from "./components/ShowCountries";
+import FilterRegion from "./components/FilterRegion";
+import SubRegionSelector from "./components/SubRegionSelector";
+import FilterSubRegion from "./components/FilterSubRegion";
+import CountryDetail from "./components/CountryDetail";
+import PageNotFound from "./components/PageNotFound";
 
 export const themeContext = createContext();
 
 function App() {
 
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [countries, setCountries] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectSubRegion, setSelectSubRegion] = useState("");
   const [searchCountry, setSearchCountry] = useState("");
+  const [sortCountry, setSortCountry] = useState({});
+
+  const [filteredCountry, setFilteredCountry] = useState();
 
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all")
@@ -21,7 +31,7 @@ function App() {
         setCountries(result);
       })
       .catch(error => {
-        console.log( "Data not found", error);
+        console.error("Data not found", error);
       })
   }, [])
 
@@ -35,13 +45,49 @@ function App() {
 
 
   return (
-    <div className={`${darkMode ? theme.darkBackground : theme.lightBackground} min-h-screen h-full`}>
-      <themeContext.Provider value={theme} >
-        <Header setDarkMode={setDarkMode} />
-        <RegionSelector countries={countries} setSelectedRegion={setSelectedRegion} selectedRegion={selectedRegion} searchCountry={searchCountry} setSearchCountry={setSearchCountry}/>
-        <ShowCountries selectedRegion={selectedRegion} searchCountry={searchCountry} countries={countries} />
-      </themeContext.Provider>
-    </div>
+    <BrowserRouter>
+      <div className={`${darkMode ? theme.darkBackground : theme.lightBackground} min-h-screen h-full`}>
+        <themeContext.Provider value={theme} >
+          <Header setDarkMode={setDarkMode} />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <RegionSelector
+                    countries={countries}
+                    setSelectedRegion={setSelectedRegion}
+                    selectedRegion={selectedRegion}
+                    searchCountry={searchCountry}
+                    setSearchCountry={setSearchCountry}
+                  />
+                  <SubRegionSelector
+                    filteredCountry={filteredCountry}
+                    selectSubRegion={selectSubRegion}
+                    setSelectSubRegion={setSelectSubRegion}
+                    selectedRegion={selectedRegion}
+                    setSortCountry={setSortCountry}
+                  />
+                  <FilterRegion
+                    selectedRegion={selectedRegion}
+                    searchCountry={searchCountry}
+                    countries={countries}
+                    setFilteredCountry={setFilteredCountry}
+                  />
+                  <FilterSubRegion
+                    filteredCountry={filteredCountry}
+                    selectSubRegion={selectSubRegion}
+                    sortCountry={sortCountry}
+                  />
+                </>
+              }
+            />
+            <Route path="/country/:id" element={<CountryDetail countries={countries} />}/>
+            <Route path="*" element={ <PageNotFound />}/>
+          </Routes>
+        </themeContext.Provider>
+      </div>
+    </BrowserRouter>
   )
 }
 
