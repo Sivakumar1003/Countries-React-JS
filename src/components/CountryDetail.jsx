@@ -47,9 +47,8 @@ export default function CountryDetail({ countries }) {
           <div className='flex flex-col items-center'>
 
             <div className={`m-8 w-[90%] lg:w-[100%] lg:px-15`}>
-              <button onClick={() => navigate(-1)} className={`${darkMode ? darkElement : lightElement} px-4 pr-6 flex items-center`}>
-                <span className='font-black  text-4xl pb-3'>&larr; </span>
-                <span className="">Back</span>
+              <button onClick={() => navigate(-1)} className={`${darkMode ? darkElement : lightElement} px-4 pr-6 flex items-center cursor-pointer`}>
+                <span className="p-1">&larr; Back</span>
               </button>
             </div>
 
