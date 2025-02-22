@@ -1,19 +1,17 @@
 import { createContext, useEffect, useState } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 
 import Header from "./components/Header";
-import RegionSelector from "./components/RegionSelector";
-import FilterRegion from "./components/FilterRegion";
-import SubRegionSelector from "./components/SubRegionSelector";
-import FilterSubRegion from "./components/FilterSubRegion";
 import CountryDetail from "./components/CountryDetail";
 import PageNotFound from "./components/PageNotFound";
+import Home from "./components/Home";
 
 export const themeContext = createContext();
 
 function App() {
 
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const [countries, setCountries] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState("");
   const [selectSubRegion, setSelectSubRegion] = useState("");
@@ -31,9 +29,23 @@ function App() {
         setCountries(result);
       })
       .catch(error => {
-        console.error("Data not found", error);
+        notify(error);
       })
-  }, [])
+  }, []);
+
+  function notify() {
+    toast.error('Data not found', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+      });
+  }
 
   const theme = {
     darkMode,
@@ -43,6 +55,19 @@ function App() {
     lightElement: "bg-[hsl(0,0%,100%)] text-[hsl(200,15%,8%)] font-[Nunito_Sans] "
   }
 
+  const toHome = {
+    countries,
+    selectedRegion,
+    selectSubRegion,
+    searchCountry,
+    filteredCountry,
+    sortCountry,
+    setSelectedRegion,
+    setSearchCountry,
+    setSelectSubRegion,
+    setSortCountry,
+    setFilteredCountry
+  }
 
   return (
     <BrowserRouter>
@@ -50,42 +75,12 @@ function App() {
         <themeContext.Provider value={theme} >
           <Header setDarkMode={setDarkMode} />
           <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <RegionSelector
-                    countries={countries}
-                    setSelectedRegion={setSelectedRegion}
-                    selectedRegion={selectedRegion}
-                    searchCountry={searchCountry}
-                    setSearchCountry={setSearchCountry}
-                  />
-                  <SubRegionSelector
-                    filteredCountry={filteredCountry}
-                    selectSubRegion={selectSubRegion}
-                    setSelectSubRegion={setSelectSubRegion}
-                    selectedRegion={selectedRegion}
-                    setSortCountry={setSortCountry}
-                  />
-                  <FilterRegion
-                    selectedRegion={selectedRegion}
-                    searchCountry={searchCountry}
-                    countries={countries}
-                    setFilteredCountry={setFilteredCountry}
-                  />
-                  <FilterSubRegion
-                    filteredCountry={filteredCountry}
-                    selectSubRegion={selectSubRegion}
-                    sortCountry={sortCountry}
-                  />
-                </>
-              }
-            />
+            <Route path="/" element={<Home toHome={toHome} />} />
             <Route path="/country/:id" element={<CountryDetail countries={countries} />}/>
             <Route path="*" element={ <PageNotFound />}/>
           </Routes>
         </themeContext.Provider>
+        <ToastContainer />
       </div>
     </BrowserRouter>
   )
