@@ -25,25 +25,25 @@ export default function RegionSelector({ countries, setSelectedRegion, selectedR
     }
 
     return (
-        <div className='flex flex-col justify-center gap-8 p-6 md:flex-row md:justify-between '>
+        <div className='flex flex-col gap-4 p-4 md:flex-row lg:w-[50%] md:justify-between '>
 
-            <div className={` ${darkMode ? darkElement : lightElement} shadow flex p-2 w-full m-auto md:m-0 md:w-[45%] max-w-[600px] gap-4 items-center rounded-lg`}>
+            <div className={` ${darkMode ? darkElement : lightElement} shadow flex p-2 w-full m-auto md:m-0  md:my-1 md:w-[65%] max-w-[600px] gap-4 items-center rounded-lg`}>
                 <img src={`${darkMode ? '/searchdark.svg' : '/searchdark.svg' }`} className={`h-[30px] ${darkMode ? "" : ""}`} />
                 <input
                     type="text"
                     placeholder='Search for a country...'
                     value={searchCountry}
                     onChange={changeSearch}
-                    className={`${darkMode ? darkElement : lightElement} font-medium text-md md:text-lg w-full h-[30px] focus:border-0 cursor-pointer focus:outline-none`}
+                    className={`${darkMode ? darkElement : lightElement} w-full font-medium text-sm md:text-md rounded-lg focus:outline-none cursor-pointer`}
                 />
             </div>
 
-            <div className={` ${darkMode ? darkElement : lightElement} shadow p-2 items-center w-[60%] md:max-w-[350px] rounded-lg`}>
+            <div className={` ${darkMode ? darkElement : lightElement} shadow p-2 md:my-1 items-center w-full md:max-w-[35%] rounded-lg`}>
 
                 <select
                     name="region"
                     id="region"
-                    className='focus:outline-none cursor-pointer w-full font-bold text-md md:text-lg'
+                    className={`${darkMode ? darkElement : lightElement} w-full font-medium text-sm md:text-md rounded-lg focus:outline-none cursor-pointer`}
                     onChange={changeSelected}
                     value={selectedRegion}>
 
